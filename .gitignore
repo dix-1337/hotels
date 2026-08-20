@@ -1,5 +1,15 @@
 __pycache__/
-.idea/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
 .venv/
-*.pyc
 .env
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+celerybeat-schedule
