@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 from fastapi_cache.decorator import cache
 from fastapi import Query, Body, APIRouter, HTTPException
 
@@ -15,8 +15,8 @@ async def get_hotels(
         db: DBDep,
         title: str | None = Query(default=None, description="Название отеля"),
         location: str | None = Query(None, description="Адрес отеля"),
-        date_from: date = Query(examples=["2026-08-11"]),
-        date_to: date = Query(examples=["2026-08-20"]),
+        date_from: date = date.today(),
+        date_to: date = date.today() + timedelta(days=7),
 
 ):
     if date_from>=date_to:
@@ -58,23 +58,23 @@ async def create_hotel(db: DBDep, hotel: HotelAdd = Body(openapi_examples={
 
 @router.put("/{id}", summary="Изменить отель по номеру")
 async def put_hotel(db: DBDep,
-                    id: int,
+                    hotel_id: int,
                     hotel_data: HotelAdd
 )->dict:
-    await db.hotels.edit(data=hotel_data, id=id)
+    await db.hotels.edit(data=hotel_data, id=hotel_id)
     await db.commit()
     return {"status" : "OK"}
 
 
 @router.patch("/{id}", summary="Частично изменить отель по номеру")
 async def patch_hotel(db: DBDep,
-                      id: int,
+                      hotel_id: int,
                       hotel_data: HotelPatch
 )->dict:
     if hotel_data.title is None and hotel_data.location is None:
         return {"status" : "Вы не ввели данные"}
 
-    await db.hotels.patch(data=hotel_data, exclude_unset=True, id=id)
+    await db.hotels.patch(data=hotel_data, exclude_unset=True, id=hotel_id)
     await db.commit()
     return {"status" : "OK"}
 

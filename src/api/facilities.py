@@ -3,7 +3,6 @@ import json
 from fastapi_cache.decorator import cache
 
 from src.api.dependencies import DBDep
-from src.init import redis_manager
 from src.schemas.facilities import FacilityAdd
 from src.tasks.tasks import test_task
 

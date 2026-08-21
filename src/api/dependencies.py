@@ -1,4 +1,3 @@
-import jwt
 from fastapi import Query, Request, HTTPException
 from typing import Annotated
 

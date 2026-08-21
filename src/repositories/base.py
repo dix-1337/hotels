@@ -42,10 +42,10 @@ class BaseRepository:
         return self.mapper.map_to_domain_entity(new_model)
 
     async def add_bulk(self, model: list[BaseModel]) -> dict:
-        # new_models = [ self.model(**item.model_dump()) for item in model ]
-        # self.session.add_all(new_models)
-        add_data_stmt = insert(self.model).values([item.model_dump() for item in model])
-        await self.session.execute(add_data_stmt)
+        new_models = [ self.model(**item.model_dump()) for item in model ]
+        self.session.add_all(new_models)
+        # add_data_stmt = insert(self.model).values([item.model_dump() for item in model])
+        # await self.session.execute(add_data_stmt)
 
 
     async def edit(self, data: BaseModel, **filter_by)->None:

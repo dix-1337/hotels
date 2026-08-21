@@ -1,21 +1,21 @@
-from datetime import date
+from datetime import date, timedelta
 
 from sqlalchemy import exc
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException
 
 from src.api.dependencies import DBDep
 from src.schemas.facilities import RoomFacilityAdd
 
-from src.schemas.rooms import RoomAdd, Room, RoomPatch, RoomAddHotelId, RoomPatchRequest, RoomsWithRels
+from src.schemas.rooms import RoomAdd, RoomPatch, RoomAddHotelId, RoomPatchRequest, RoomsWithRels
 
 router = APIRouter(prefix='/hotels', tags=['Номера'])
 
 
-@router.get("/{hotel_id}/rooms", summary='Возвращает список отелей')
+@router.get("/{hotel_id}/rooms", summary='Возвращает список номеров')
 async def get_rooms(
         db: DBDep, hotel_id: int,
-        date_from: date = Query(examples=["2026-08-11"]),
-        date_to: date = Query(examples=["2026-08-20"])
+        date_from: date = date.today(),
+        date_to: date = date.today() + timedelta(days=7)
 ):
     if date_from>=date_to:
         raise HTTPException(status_code=404, detail="Неверный диапазон дат")
@@ -29,7 +29,7 @@ async def get_rooms(
 async def get_room_by_id(db: DBDep, hotel_id: int, room_id: int) -> RoomsWithRels | None:
     return await db.rooms.get_room_by_id(room_id=room_id)
 
-@router.post("/{hotel_id}/rooms", summary="Добавить новый отель")
+@router.post("/{hotel_id}/rooms", summary="Добавить новый номер")
 async def create_room(db: DBDep, hotel_id: int, room_data: RoomAdd)->dict:
     _room_data = RoomAddHotelId(hotel_id=hotel_id, **room_data.model_dump())
     try:
