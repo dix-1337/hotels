@@ -2,7 +2,7 @@ from sqlalchemy import exc
 
 from fastapi import APIRouter, HTTPException, Response
 
-from services.auth import AuthService
+from src.services.auth import AuthService
 from src.api.dependencies import AuthentificationDep, DBDep
 from src.schemas.users import UserRequestAdd, UserAdd
 

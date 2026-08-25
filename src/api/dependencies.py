@@ -5,7 +5,7 @@ from fastapi import Depends
 from jwt import PyJWTError
 from pydantic import BaseModel
 
-from services.auth import AuthService
+from src.services.auth import AuthService
 from src.database import async_session_maker
 from src.utils.db_manager import DBManager
 
