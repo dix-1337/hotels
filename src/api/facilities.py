@@ -13,6 +13,7 @@ router = APIRouter(prefix="/facilities", tags=["Удобства"])
 async def get_facilities(db: DBDep):
     return await db.facilities.get_all()
 
+    # пример проверки в Redis без декоратора fastapi-cache
     # facilities_from_cache = await redis_manager.get("facilities")
     # print(f"{facilities_from_cache=}")
     # if not facilities_from_cache:
@@ -32,4 +33,4 @@ async def add_facility(db: DBDep, facility: FacilityAdd):
 
     test_task.delay()
 
-    return {"status": "ok", "new_facility": new_facility}
+    return {"status": "ok", "data": new_facility}

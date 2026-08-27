@@ -5,8 +5,8 @@ from httpx import AsyncClient
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 
-# from unittest import mock
-# mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
+from unittest import mock
+mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
 # пример mock, подмены декоратора на пустышку, он должен быть прописан перед импортом с src
 
 from main import app
@@ -74,8 +74,8 @@ async def register_user(async_main, ac):
     assert response.status_code == 200
 
 
-@pytest.fixture(scope="session", autouse=True)
-async def init_test_cache():
-    FastAPICache.init(InMemoryBackend(), prefix="test-cache")
-    yield
-    await FastAPICache.clear()
+# @pytest.fixture(scope="session", autouse=True)
+# async def init_test_cache():
+#     FastAPICache.init(InMemoryBackend(), prefix="test-cache")
+#     yield
+#     await FastAPICache.clear()
