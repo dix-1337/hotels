@@ -25,7 +25,10 @@ async def lifespan(app: FastAPI):
     await redis_manager.close()
 
 
-app = FastAPI(lifespan=lifespan, docs_url=None)
+app = FastAPI(
+    lifespan=lifespan,
+    docs_url=None
+)
 setup_swagger_ui_theme(app, docs_path="/docs")
 app.include_router(router_auth)
 app.include_router(router_hotels)

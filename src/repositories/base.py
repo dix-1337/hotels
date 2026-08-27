@@ -16,7 +16,7 @@ class BaseRepository:
     async def get_filtered(self, *filter, **filter_by)->list[BaseModel]:
         query = select(self.model).filter(*filter).filter_by(**filter_by)
         result = await self.session.execute(query)
-        print(query.compile(engine, compile_kwargs={"literal_binds": True}))
+        #print(query.compile(engine, compile_kwargs={"literal_binds": True}))
         return [self.mapper.map_to_domain_entity(model) for model in result.scalars().all()]
 
     async def get_all(self, *args, **kwargs)->list[BaseModel]:
@@ -25,7 +25,7 @@ class BaseRepository:
     async def get_one_or_none(self, **filter_by: dict) -> BaseModel | None:
         query = select(self.model).filter_by(**filter_by)
         result = await self.session.execute(query)
-        print(query.compile(engine, compile_kwargs={"literal_binds": True}))
+        #print(query.compile(engine, compile_kwargs={"literal_binds": True}))
         model = result.scalars().one_or_none()
         if model is None:
             return None
@@ -65,7 +65,7 @@ class BaseRepository:
             .filter_by(**filter_by)
         )
         await self.session.execute(stmt)
-        print(stmt.compile(engine, compile_kwargs={"literal_binds": True}))
+        #print(stmt.compile(engine, compile_kwargs={"literal_binds": True}))
 
     async def delete(self, **filter_by)->None:
         stmt = (
@@ -73,6 +73,6 @@ class BaseRepository:
             .filter_by(**filter_by)
         )
         res = await self.session.execute(stmt)
-        print(stmt.compile(engine, compile_kwargs={"literal_binds": True}))
+        #print(stmt.compile(engine, compile_kwargs={"literal_binds": True}))
         print(f"Удалено строк: {res.rowcount}")
 

@@ -42,5 +42,5 @@ class HotelsRepository(BaseRepository):
             .offset(offset)  # начиная с какого номера
         )
         result = await self.session.execute(query)
-        print(query.compile(engine, compile_kwargs={"literal_binds": True}))
+        #print(query.compile(engine, compile_kwargs={"literal_binds": True}))
         return [self.mapper.map_to_domain_entity(model) for model in result.scalars().all()]

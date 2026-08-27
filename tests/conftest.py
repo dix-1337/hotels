@@ -2,9 +2,16 @@ import httpx
 import pytest
 import json
 from httpx import AsyncClient
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
+
+# from unittest import mock
+# mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
+# пример mock, подмены декоратора на пустышку, он должен быть прописан перед импортом с src
 
 from main import app
 from src import settings
+from src.api.dependencies import get_db
 from src.database import Base, engine_null_pool, async_session_maker_null_pool
 import src.models
 from src.schemas.hotels import HotelAdd
@@ -15,13 +22,6 @@ from src.utils.db_manager import DBManager
 @pytest.fixture(scope="session", autouse=True)
 def check_test_mode():
     assert settings.MODE == "TEST"
-
-
-@pytest.fixture()
-async def db() -> DBManager:
-    async with DBManager(session_factory=async_session_maker_null_pool) as db:
-        yield db
-
 
 @pytest.fixture(scope="session", autouse=True)
 async def async_main(check_test_mode):
@@ -43,6 +43,16 @@ async def async_main(check_test_mode):
         await db_manager.rooms.add_bulk([RoomAddHotelId.model_validate(item) for item in mock_rooms])
         await db_manager.commit()
 
+async def get_db_null_pool():
+    async with DBManager(session_factory=async_session_maker_null_pool) as db:
+        yield db
+
+@pytest.fixture(scope="function")
+async def db() -> DBManager:
+    async for db in get_db_null_pool():
+        yield db
+
+app.dependency_overrides[get_db] = get_db_null_pool
 
 transport = httpx.ASGITransport(app=app)
 
@@ -63,3 +73,9 @@ async def register_user(async_main, ac):
     )
     assert response.status_code == 200
 
+
+@pytest.fixture(scope="session", autouse=True)
+async def init_test_cache():
+    FastAPICache.init(InMemoryBackend(), prefix="test-cache")
+    yield
+    await FastAPICache.clear()
