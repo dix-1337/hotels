@@ -48,16 +48,16 @@ class BaseRepository:
         # await self.session.execute(add_data_stmt)
 
 
-    async def edit(self, data: BaseModel, **filter_by)->None:
-        stmt = (
-            update(self.model)
-            .values(**data.model_dump())
-            .filter_by(**filter_by)
-        )
-        await self.session.execute(stmt)
-        print(stmt.compile(engine, compile_kwargs={"literal_binds": True}))
+    # async def edit(self, data: BaseModel, **filter_by)->None:
+    #     stmt = (
+    #         update(self.model)
+    #         .values(**data.model_dump())
+    #         .filter_by(**filter_by)
+    #     )
+    #     await self.session.execute(stmt)
+    #     print(stmt.compile(engine, compile_kwargs={"literal_binds": True}))
 
-    async def patch(self, data: BaseModel, exclude_unset: bool=False, **filter_by)->None:
+    async def edit(self, data: BaseModel, exclude_unset: bool=False, **filter_by)->None:
         stmt = (
             update(self.model)
             .values(**data.model_dump(exclude_unset=exclude_unset))

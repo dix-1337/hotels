@@ -74,7 +74,7 @@ async def patch_hotel(db: DBDep,
     if hotel_data.title is None and hotel_data.location is None:
         return {"status" : "Вы не ввели данные"}
 
-    await db.hotels.patch(data=hotel_data, exclude_unset=True, id=hotel_id)
+    await db.hotels.edit(data=hotel_data, exclude_unset=True, id=hotel_id)
     await db.commit()
     return {"status" : "OK"}
 

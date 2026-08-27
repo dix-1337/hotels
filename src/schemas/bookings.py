@@ -14,3 +14,9 @@ class BookingAddWithPrice(BookingAdd):
 
 class Booking(BookingAddWithPrice):
     id: int
+
+class BookingEdit(BaseModel):
+    room_id: int | None = None
+    date_from: date | None = None
+    date_to: date | None = None
+    price: int | None = None

@@ -61,7 +61,7 @@ async def patch_room(db: DBDep, hotel_id: int, room_id: int, room_data: RoomPatc
         return {"status" : "Вы не ввели данные"}
     _room_data = RoomPatch(hotel_id=hotel_id, **room_data.model_dump())
     _room_data_dict = room_data.model_dump(exclude_unset=True)
-    await db.rooms.patch(data=_room_data,
+    await db.rooms.edit(data=_room_data,
                          exclude_unset=True,
                          id=room_id
                     )
