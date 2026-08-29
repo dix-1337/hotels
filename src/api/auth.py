@@ -16,7 +16,7 @@ async def register_user(db: DBDep, data: UserRequestAdd) -> dict:
         await db.users.add(new_user_data)
         await db.commit()
     except exc.IntegrityError as error:
-        raise HTTPException(status_code=404, detail="Данный email уже зарегистрирован")
+        raise HTTPException(status_code=409, detail="Данный email уже зарегистрирован")
 
     return {"status": "OK"}
 

@@ -1,9 +1,12 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from fastapi import HTTPException
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
+from sqlalchemy import String
 
 
 class UserRequestAdd(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(min_length=6, max_length=20)
 
 class UserAdd(BaseModel):
     email: EmailStr
