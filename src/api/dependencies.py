@@ -28,7 +28,7 @@ def get_current_user_id(token: str = Depends(get_token)) -> int:
     except PyJWTError as e:
         raise HTTPException(status_code=401, detail=f"Access token is not valid ({type(e)}, {e})")
     user_id = data.get("user_id", None)
-    print(data)
+    #print(data)
     if user_id is None:
         raise HTTPException(status_code=401, detail="Ошибка, пользователь не найден")
     return user_id

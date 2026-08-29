@@ -33,7 +33,7 @@ class BookingsRepository(BaseRepository):
             hotel_id=hotel_id
         )
         rooms_ids_free: list[int] = (await self.session.execute(rooms_ids_to_get)).scalars().all()
-        print(f"{rooms_ids_free=}")
+        #print(f"{rooms_ids_free=}")
         if data.room_id in rooms_ids_free:
             return await self.add(data)
         else:

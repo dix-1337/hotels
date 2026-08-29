@@ -32,10 +32,7 @@ async def add_booking(db: DBDep, user_id: AuthentificationDep, booking: BookingA
         date_from=booking.date_from
         )
     new_booking = BookingAddWithPrice(**booking_dict)
-    try:
-        await db.bookings.add_booking(new_booking, hotel_id=room.hotel_id)
-    except HTTPException as e:
-        return str(e)
+    await db.bookings.add_booking(new_booking, hotel_id=room.hotel_id)
     await db.commit()
     return {"status": "ok", "data": new_booking}
 
