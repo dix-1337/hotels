@@ -1,3 +1,4 @@
+from celery.worker.consumer.mingle import exception
 from fastapi import APIRouter, HTTPException
 
 from src.api.dependencies import DBDep, AuthentificationDep
@@ -17,6 +18,8 @@ async def get_my_bookings(db: DBDep, user_id: AuthentificationDep):
 
 @router.post("")
 async def add_booking(db: DBDep, user_id: AuthentificationDep, booking: BookingAdd):
+    if booking.date_from>=booking.date_to:
+        raise HTTPException(status_code=404, detail="Неверный диапазон дат")
     booking_dict = booking.model_dump()
     booking_dict["user_id"] = user_id
     room = await db.rooms.get_one_or_none(id=booking.room_id)
@@ -29,7 +32,10 @@ async def add_booking(db: DBDep, user_id: AuthentificationDep, booking: BookingA
         date_from=booking.date_from
         )
     new_booking = BookingAddWithPrice(**booking_dict)
-    await db.bookings.add(new_booking)
+    try:
+        await db.bookings.add_booking(new_booking, hotel_id=room.hotel_id)
+    except HTTPException as e:
+        return str(e)
     await db.commit()
     return {"status": "ok", "data": new_booking}
 

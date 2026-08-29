@@ -55,11 +55,11 @@ async def put_room(db: DBDep, hotel_id: int, room_id: int, data: RoomAdd) -> dic
 
 @router.patch("/{hotel_id}/rooms/{room_id}", summary="Частично изменить номер по id")
 async def patch_room(db: DBDep, hotel_id: int, room_id: int, room_data: RoomPatchRequest) -> dict:
-    if (room_data.title is None and room_data.description is None
-            and room_data.quantity is None and room_data.price is None
-            and room_data.facilities_ids is None):
+    _room_data = RoomPatch(hotel_id=hotel_id, **room_data.model_dump(exclude_unset=True))
+    _room_data_dict = room_data.model_dump(exclude_unset=True)
+    if not _room_data_dict:
         return {"status" : "Вы не ввели данные"}
-    _room_data = RoomPatch(hotel_id=hotel_id, **room_data.model_dump())
+    _room_data = RoomPatch(hotel_id=hotel_id, **room_data.model_dump(exclude_unset=True))
     _room_data_dict = room_data.model_dump(exclude_unset=True)
     await db.rooms.edit(data=_room_data,
                          exclude_unset=True,

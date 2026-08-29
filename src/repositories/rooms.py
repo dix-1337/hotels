@@ -43,3 +43,4 @@ class RoomsRepository(BaseRepository):
             return None
         return RoomDataWIthRelsMapper.map_to_domain_entity(model)
 
+
