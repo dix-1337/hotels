@@ -7,5 +7,5 @@ async def test_get_hotels(ac):
             "per_page": 1
         }
     )
-    print(f"{response.json()=}")
+    #print(f"{response.json()=}")
     assert response.status_code == 200

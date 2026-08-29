@@ -31,7 +31,7 @@ async def add_booking(db: DBDep, user_id: AuthentificationDep, booking: BookingA
     new_booking = BookingAddWithPrice(**booking_dict)
     await db.bookings.add(new_booking)
     await db.commit()
-    return {"status": "ok", "new_booking": new_booking}
+    return {"status": "ok", "data": new_booking}
 
 # @router.get("/today-checkin")
 # async def get_today_bookings(db: DBDep):

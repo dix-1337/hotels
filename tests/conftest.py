@@ -5,8 +5,8 @@ from httpx import AsyncClient
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 
-from unittest import mock
-mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
+# from unittest import mock
+# mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
 # пример mock, подмены декоратора на пустышку, он должен быть прописан перед импортом с src
 
 from main import app
@@ -16,6 +16,7 @@ from src.database import Base, engine_null_pool, async_session_maker_null_pool
 import src.models
 from src.schemas.hotels import HotelAdd
 from src.schemas.rooms import RoomAddHotelId
+from src.services.auth import AuthService
 from src.utils.db_manager import DBManager
 
 
@@ -74,8 +75,23 @@ async def register_user(async_main, ac):
     assert response.status_code == 200
 
 
-# @pytest.fixture(scope="session", autouse=True)
-# async def init_test_cache():
-#     FastAPICache.init(InMemoryBackend(), prefix="test-cache")
-#     yield
-#     await FastAPICache.clear()
+@pytest.fixture(scope="session", autouse=True)
+async def init_test_cache():
+    FastAPICache.init(InMemoryBackend(), prefix="test-cache")
+    yield
+    await FastAPICache.clear()
+
+
+@pytest.fixture(scope="session")
+async def authenticated_ac(register_user, ac):
+    response = await ac.post(
+        url="/auth/login",
+        json = {
+            "email": "testmail13@gmail.com",
+            "password": "12345test"
+        }
+    )
+    assert response.status_code == 200
+    assert response.cookies.get("access_token")
+    yield ac
+
